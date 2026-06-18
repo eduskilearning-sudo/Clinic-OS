@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClinicOS — Your clinic, fully digital in minutes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & TOKENS ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --teal:       #1D9E75;
+  --teal-mid:   #17836100;
+  --teal-light: #E1F5EE;
+  --teal-dark:  #085041;
+  --ink:        #111210;
+  --ink2:       #3D3C38;
+  --ink3:       #888780;
+  --surface:    #FFFFFF;
+  --surface2:   #F7F6F2;
+  --surface3:   #EFEDE8;
+  --border:     rgba(0,0,0,0.08);
+  --border2:    rgba(0,0,0,0.14);
+  --radius:     14px;
+  --radius-sm:  8px;
+  --shadow:     0 2px 16px rgba(0,0,0,0.07);
+  --shadow-md:  0 4px 28px rgba(0,0,0,0.10);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── VIEWS ─── */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ─── NAV ─── */
+#main-nav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(255,255,255,0.93);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 5%;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 62px;
+}
+.nav-logo {
+  font-family: 'Sora', sans-serif; font-weight: 800; font-size: 19px;
+  color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 9px;
+}
+.nav-logo .logo-mark {
+  width: 32px; height: 32px; background: var(--teal); border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-logo .logo-mark svg { width: 18px; height: 18px; fill: white; }
+.nav-logo span { color: var(--teal); }
+.nav-right { display: flex; align-items: center; gap: 8px; }
+.nav-link {
+  font-size: 13.5px; font-weight: 500; color: var(--ink2); text-decoration: none;
+  padding: 6px 14px; border-radius: var(--radius-sm); transition: background .15s;
+}
+.nav-link:hover { background: var(--surface2); }
+.nav-btn {
+  font-size: 13.5px; font-weight: 600; padding: 9px 20px;
+  border-radius: var(--radius-sm); border: none; cursor: pointer; transition: opacity .18s;
+}
+.nav-btn-outline {
+  background: transparent; color: var(--ink); border: 1.5px solid var(--border2);
+}
+.nav-btn-outline:hover { background: var(--surface2); }
+.nav-btn-primary { background: var(--teal); color: white; }
+.nav-btn-primary:hover { opacity: .85; }
+
+/* ─── LANDING: HERO ─── */
+.hero-wrap {
+  padding: 80px 5% 60px;
+  max-width: 1180px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--teal-light); color: var(--teal-dark);
+  font-size: 11.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  padding: 5px 13px; border-radius: 100px; margin-bottom: 22px;
+}
+.hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+.hero-h1 {
+  font-family: 'Sora', sans-serif; font-size: 48px; font-weight: 800;
+  line-height: 1.1; color: var(--ink); margin-bottom: 20px; letter-spacing: -.01em;
+}
+.hero-h1 em { font-style: normal; color: var(--teal); }
+.hero-sub { font-size: 17px; color: var(--ink2); line-height: 1.75; margin-bottom: 32px; max-width: 440px; }
+.hero-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.btn-primary-lg {
+  background: var(--teal); color: white; padding: 13px 26px; border-radius: 10px;
+  font-size: 15px; font-weight: 600; text-decoration: none; border: none; cursor: pointer;
+  transition: opacity .18s; display: inline-flex; align-items: center; gap: 7px;
+}
+.btn-primary-lg:hover { opacity: .85; }
+.btn-ghost {
+  color: var(--ink2); padding: 13px 22px; border-radius: 10px;
+  font-size: 15px; font-weight: 500; text-decoration: none; border: 1.5px solid var(--border2);
+  cursor: pointer; background: transparent; transition: background .15s; display: inline-flex; align-items: center; gap: 7px;
+}
+.btn-ghost:hover { background: var(--surface2); }
+.hero-note { font-size: 12.5px; color: var(--ink3); margin-top: 14px; }
+
+/* ─── DASHBOARD PREVIEW WIDGET ─── */
+.dash-preview {
+  background: var(--surface2); border-radius: 18px;
+  border: 1px solid var(--border2); overflow: hidden; font-size: 12.5px;
+  box-shadow: var(--shadow-md);
+}
+.dp-bar {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 11px 16px; display: flex; align-items: center; gap: 9px;
+}
+.dp-dots { display: flex; gap: 5px; }
+.dp-dot { width: 10px; height: 10px; border-radius: 50%; }
+.dp-dot-r { background: #FF5F57; } .dp-dot-y { background: #FFBC2E; } .dp-dot-g { background: #28C840; }
+.dp-bar-url {
+  flex: 1; text-align: center; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 4px 10px; font-size: 11px; color: var(--ink3);
+}
+.dp-body { display: grid; grid-template-columns: 130px 1fr; min-height: 280px; }
+.dp-sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 10px 0; }
+.dp-brand { padding: 10px 14px 14px; font-family:'Sora',sans-serif; font-weight:700; font-size:12px; color:var(--ink); border-bottom:1px solid var(--border); margin-bottom:8px; }
+.dp-brand small { color:var(--teal); }
+.dp-nav { padding: 6px 10px; font-size: 11.5px; color: var(--ink3); display: flex; align-items: center; gap: 7px; border-radius: 6px; margin: 1px 6px; }
+.dp-nav.on { background: var(--teal-light); color: var(--teal-dark); font-weight: 600; }
+.dp-main { padding: 14px; }
+.dp-stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-bottom: 12px; }
+.dp-stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; }
+.dp-stat-n { font-size: 18px; font-weight: 700; color: var(--ink); }
+.dp-stat-l { font-size: 9.5px; color: var(--ink3); margin-top: 1px; }
+.dp-row { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.dp-rrow { padding: 8px 10px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); }
+.dp-rrow:last-child { border-bottom: none; }
+.dp-av { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; flex-shrink: 0; }
+.dp-rname { font-size: 11.5px; font-weight: 500; flex: 1; }
+.dp-rtime { font-size: 10px; color: var(--ink3); }
+.dp-pill { font-size: 9.5px; font-weight: 700; padding: 2px 8px; border-radius: 100px; }
+.pill-confirmed { background: #EAF4DE; color: #2A5A0D; }
+.pill-waiting   { background: #FEF0D4; color: #7A4200; }
+.pill-done      { background: #F1EFE8; color: #555; }
+
+/* ─── LOGOS BAR ─── */
+.logos-bar { background: var(--surface2); padding: 22px 5%; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.logos-inner { max-width: 1180px; margin: 0 auto; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.logos-label { font-size: 11.5px; color: var(--ink3); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
+.clinic-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.clinic-pill { background: var(--surface); border: 1px solid var(--border2); border-radius: 100px; padding: 4px 14px; font-size: 12px; color: var(--ink2); font-weight: 500; }
+
+/* ─── SECTION SKELETON ─── */
+.section { padding: 80px 5%; }
+.section-inner { max-width: 1180px; margin: 0 auto; }
+.eyebrow { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--teal); margin-bottom: 12px; }
+.section-h2 { font-family: 'Sora', sans-serif; font-size: 36px; font-weight: 800; line-height: 1.15; margin-bottom: 14px; }
+.section-sub { font-size: 16.5px; color: var(--ink2); max-width: 520px; line-height: 1.75; margin-bottom: 48px; }
+
+/* ─── HOW IT WORKS ─── */
+.hiw-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; border: 1px solid var(--border2); border-radius: var(--radius); overflow: hidden; }
+.hiw-step { padding: 36px 30px; border-right: 1px solid var(--border2); }
+.hiw-step:last-child { border-right: none; }
+.hiw-num { font-family: 'Sora', sans-serif; font-size: 40px; font-weight: 800; color: var(--teal-light); margin-bottom: 16px; line-height: 1; }
+.hiw-title { font-size: 15.5px; font-weight: 700; margin-bottom: 8px; }
+.hiw-desc { font-size: 13.5px; color: var(--ink2); line-height: 1.7; }
+
+/* ─── FEATURES ─── */
+.features-bg { background: var(--surface2); }
+.features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+.feat-card {
+  background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius);
+  padding: 28px 24px; transition: box-shadow .18s;
+}
+.feat-card:hover { box-shadow: var(--shadow-md); }
+.feat-icon {
+  width: 42px; height: 42px; border-radius: 11px; background: var(--teal-light);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 16px;
+}
+.feat-icon svg { width: 20px; height: 20px; stroke: var(--teal-dark); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.feat-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.feat-desc { font-size: 13px; color: var(--ink2); line-height: 1.7; }
+
+/* ─── TESTIMONIALS ─── */
+.testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.testi-card { border: 1px solid var(--border2); border-radius: var(--radius); padding: 26px 22px; }
+.testi-text { font-size: 14px; color: var(--ink2); line-height: 1.75; margin-bottom: 20px; font-style: italic; }
+.testi-author { display: flex; align-items: center; gap: 12px; }
+.testi-avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.testi-name { font-size: 13.5px; font-weight: 600; }
+.testi-role { font-size: 12px; color: var(--ink3); }
+
+/* ─── CTA SECTION ─── */
+.cta-section { background: var(--ink); }
+.cta-inner { max-width: 640px; margin: 0 auto; text-align: center; padding: 88px 5%; }
+.cta-inner .eyebrow { color: var(--teal); }
+.cta-inner .section-h2 { color: white; }
+.cta-inner .section-sub { color: rgba(255,255,255,0.6); max-width: 100%; margin-bottom: 36px; }
+
+/* ─── FOOTER ─── */
+footer { background: var(--ink); border-top: 1px solid rgba(255,255,255,0.06); padding: 28px 5%; }
+.footer-inner { max-width: 1180px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.footer-brand { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 17px; color: white; }
+.footer-brand small { color: var(--teal); }
+.footer-links { display: flex; gap: 22px; }
+.footer-links a { font-size: 13px; color: rgba(255,255,255,0.45); text-decoration: none; transition: color .15s; }
+.footer-links a:hover { color: white; }
+.footer-copy { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+/* ─── AUTH VIEWS (LOGIN / SIGNUP) ─── */
+#view-login, #view-signup {
+  min-height: 100vh; background: var(--surface2);
+  display: none; align-items: center; justify-content: center;
+}
+#view-login.active, #view-signup.active {
+  display: flex;
+}
+.auth-wrap {
+  width: 100%; max-width: 440px; padding: 24px 16px;
+}
+.auth-card {
+  background: white; border-radius: var(--radius);
+  border: 1px solid var(--border2); padding: 36px 32px;
+  box-shadow: var(--shadow-md);
+}
+.auth-logo {
+  display: flex; align-items: center; gap: 9px;
+  font-family: 'Sora', sans-serif; font-weight: 800; font-size: 20px;
+  color: var(--ink); text-decoration: none; margin-bottom: 28px;
+  justify-content: center;
+}
+.auth-logo .logo-mark {
+  width: 34px; height: 34px; background: var(--teal); border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+}
+.auth-logo .logo-mark svg { width: 18px; height: 18px; fill: white; }
+.auth-logo span { color: var(--teal); }
+.auth-title { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 800; color: var(--ink); margin-bottom: 6px; text-align: center; }
+.auth-sub { font-size: 13.5px; color: var(--ink3); text-align: center; margin-bottom: 28px; }
+.auth-form-group { margin-bottom: 15px; }
+.auth-form-group label { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink2); margin-bottom: 6px; }
+.auth-form-group input, .auth-form-group select {
+  width: 100%; padding: 11px 14px;
+  border: 1.5px solid var(--border2); border-radius: var(--radius-sm);
+  font-size: 14.5px; font-family: 'Inter', sans-serif; color: var(--ink);
+  background: white; outline: none; transition: border-color .15s;
+}
+.auth-form-group input:focus, .auth-form-group select:focus { border-color: var(--teal); }
+.auth-form-group input::placeholder { color: var(--ink3); }
+.auth-input-wrap { position: relative; }
+.auth-input-wrap input { padding-right: 44px; }
+.auth-eye-btn {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; color: var(--ink3); padding: 4px;
+  display: flex; align-items: center;
+}
+.auth-eye-btn svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; }
+.auth-btn {
+  width: 100%; padding: 13px; background: var(--teal); color: white; border: none;
+  border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 8px;
+  transition: opacity .18s; font-family: 'Inter', sans-serif;
+}
+.auth-btn:hover { opacity: .87; }
+.auth-btn:disabled { opacity: .6; cursor: not-allowed; }
+.auth-divider { display: flex; align-items: center; gap: 10px; margin: 20px 0; color: var(--ink3); font-size: 12px; }
+.auth-divider::before, .auth-divider::after { content:''; flex:1; height:1px; background: var(--border2); }
+.auth-switch { text-align: center; font-size: 13.5px; color: var(--ink3); margin-top: 20px; }
+.auth-switch a { color: var(--teal); font-weight: 600; text-decoration: none; }
+.auth-switch a:hover { text-decoration: underline; }
+.auth-error {
+  background: #FEF0F0; border: 1px solid #FBCFCF; border-radius: var(--radius-sm);
+  color: #991B1B; font-size: 13px; padding: 10px 14px; margin-bottom: 16px; display: none;
+}
+.auth-error.show { display: block; }
+.auth-success {
+  background: var(--teal-light); border: 1px solid #A5D8C4; border-radius: var(--radius-sm);
+  color: var(--teal-dark); font-size: 13px; padding: 10px 14px; margin-bottom: 16px; display: none;
+}
+.auth-success.show { display: block; }
+.auth-back { text-align: center; margin-top: 16px; }
+.auth-back a { font-size: 13px; color: var(--ink3); text-decoration: none; }
+.auth-back a:hover { color: var(--ink); }
+.auth-role-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+.auth-role-btn {
+  border: 1.5px solid var(--border2); border-radius: var(--radius-sm); padding: 10px 8px;
+  text-align: center; cursor: pointer; background: white; transition: all .14s;
+  font-family: 'Inter', sans-serif;
+}
+.auth-role-btn:hover { border-color: var(--teal); background: var(--teal-light); }
+.auth-role-btn.selected { border-color: var(--teal); background: var(--teal-light); }
+.auth-role-btn .role-icon { font-size: 20px; margin-bottom: 4px; }
+.auth-role-btn .role-label { font-size: 12px; font-weight: 600; color: var(--ink2); }
+.auth-role-btn.selected .role-label { color: var(--teal-dark); }
+
+/* ─── ─── BOOKING ENGINE (PUBLIC VIEW) ─── ─── */
+#view-booking { background: var(--surface2); min-height: 100vh; }
+.booking-header { background: var(--teal); padding: 52px 5% 48px; text-align: center; }
+.booking-clinic-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.18); color: white;
+  font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 18px; border: 1px solid rgba(255,255,255,0.28);
+}
+.booking-header h1 { font-family: 'Sora', sans-serif; font-size: 30px; font-weight: 800; color: white; margin-bottom: 6px; }
+.booking-header p { font-size: 14.5px; color: rgba(255,255,255,0.75); }
+.booking-meta { display: flex; justify-content: center; gap: 24px; margin-top: 18px; flex-wrap: wrap; }
+.booking-meta-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: rgba(255,255,255,0.8); }
+
+.booking-form-wrap { max-width: 520px; margin: -28px auto 60px; padding: 0 16px; position: relative; z-index: 2; }
+.booking-card {
+  background: white; border-radius: var(--radius); padding: 28px 26px;
+  box-shadow: var(--shadow-md); border: 1px solid var(--border);
+}
+.booking-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 22px; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink2); margin-bottom: 6px; }
+.form-group input, .form-group select {
+  width: 100%; padding: 11px 14px;
+  border: 1.5px solid var(--border2); border-radius: var(--radius-sm);
+  font-size: 14.5px; font-family: 'Inter', sans-serif; color: var(--ink);
+  background: white; outline: none; transition: border-color .15s;
+}
+.form-group input:focus, .form-group select:focus { border-color: var(--teal); }
+.form-group input::placeholder { color: var(--ink3); }
+
+.slot-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 6px; }
+.slot-btn {
+  padding: 10px 6px; background: var(--teal-light); border: 1.5px solid transparent;
+  border-radius: var(--radius-sm); text-align: center; font-size: 12.5px; font-weight: 600;
+  color: var(--teal-dark); cursor: pointer; transition: all .12s;
+}
+.slot-btn:hover, .slot-btn.selected { background: var(--teal); color: white; border-color: var(--teal); }
+.slot-btn.full { background: var(--surface2); color: var(--ink3); cursor: not-allowed; }
+
+.btn-submit {
+  width: 100%; padding: 14px; background: var(--teal); color: white; border: none;
+  border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 6px;
+  display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity .18s;
+}
+.btn-submit:hover { opacity: .88; }
+
+.booking-success {
+  display: none; text-align: center; padding: 8px 0;
+}
+.success-icon {
+  width: 60px; height: 60px; background: var(--teal); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;
+}
+.success-icon svg { width: 28px; height: 28px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+.booking-success h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.booking-success p { font-size: 14px; color: var(--ink2); }
+
+/* ─── ─── ADMIN DASHBOARD ─── ─── */
+#view-admin { display: none; min-height: 100vh; background: var(--surface2); }
+#view-admin.active { display: grid; grid-template-columns: 220px 1fr; }
+
+.admin-sidebar {
+  background: var(--ink); min-height: 100vh;
+  display: flex; flex-direction: column; position: sticky; top: 62px; height: calc(100vh - 62px);
+}
+.admin-clinic-info { padding: 22px 20px 18px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.admin-clinic-name { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; color: white; margin-bottom: 3px; }
+.admin-clinic-link { font-size: 11px; color: var(--teal); }
+.admin-online-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #28C840; margin-right: 5px; animation: pulse 2s infinite; }
+
+.admin-nav-section { padding: 18px 12px 4px; }
+.admin-nav-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: rgba(255,255,255,0.28); padding: 0 8px; margin-bottom: 6px; }
+.admin-nav-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 10px; border-radius: 8px;
+  font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.55);
+  cursor: pointer; transition: all .14s; margin-bottom: 2px; text-decoration: none;
+}
+.admin-nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
+.admin-nav-item.active { background: rgba(29,158,117,0.2); color: var(--teal); }
+.admin-nav-item svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+.admin-role-badge { margin-top: auto; padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.06); }
+.admin-role-pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(29,158,117,0.15); color: var(--teal); font-size: 11.5px; font-weight: 600; padding: 5px 11px; border-radius: 100px; }
+
+/* ─── ADMIN PANELS ─── */
+.admin-main { padding: 28px 32px; overflow-y: auto; }
+.admin-panel { display: none; }
+.admin-panel.active { display: block; }
+
+.admin-panel-header { margin-bottom: 26px; }
+.admin-panel-title { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+.admin-panel-sub { font-size: 13px; color: var(--ink3); }
+
+/* Stats row */
+.stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 28px; }
+.stat-card { background: white; border: 1px solid var(--border2); border-radius: var(--radius); padding: 18px 20px; }
+.stat-card-label { font-size: 11.5px; font-weight: 600; color: var(--ink3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+.stat-card-val { font-family: 'Sora', sans-serif; font-size: 28px; font-weight: 800; color: var(--ink); line-height: 1; }
+.stat-card-meta { font-size: 12px; color: var(--ink3); margin-top: 5px; }
+.stat-card.accent .stat-card-val { color: var(--teal); }
+
+/* Queue table */
+.queue-table-wrap { background: white; border: 1px solid var(--border2); border-radius: var(--radius); overflow: hidden; }
+.table-toolbar {
+  padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.table-title { font-size: 14px; font-weight: 700; color: var(--ink); }
+.table-subtitle { font-size: 12px; color: var(--ink3); }
+.badge-count { display: inline-flex; align-items: center; justify-content: center; background: var(--teal-light); color: var(--teal-dark); font-size: 11px; font-weight: 700; width: 22px; height: 22px; border-radius: 50%; margin-left: 6px; }
+
+table { width: 100%; border-collapse: collapse; }
+thead th { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--ink3); padding: 12px 20px; text-align: left; border-bottom: 1px solid var(--border); background: var(--surface2); }
+tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--surface2); }
+tbody td { padding: 13px 20px; font-size: 13.5px; color: var(--ink2); vertical-align: middle; }
+td .patient-name { font-weight: 600; color: var(--ink); font-size: 14px; }
+td .patient-phone { font-size: 12px; color: var(--ink3); margin-top: 1px; }
+
+.status-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; padding: 4px 11px; border-radius: 100px; white-space: nowrap; }
+.status-pill::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.s-confirmed { background: #EAF4DE; color: #2A5A0D; }
+.s-waiting   { background: #FEF0D4; color: #7A4200; }
+.s-done      { background: #F1EFE8; color: #555; }
+
+.action-btn {
+  font-size: 12px; font-weight: 600; padding: 6px 13px; border-radius: 7px; border: 1.5px solid;
+  cursor: pointer; transition: all .13s; white-space: nowrap;
+}
+.action-checkin { background: #EAF4DE; color: #2A5A0D; border-color: #B5DCA0; }
+.action-checkin:hover { background: #B5DCA0; }
+.action-complete { background: var(--teal); color: white; border-color: var(--teal); }
+.action-complete:hover { opacity: .85; }
+.action-done-label { color: var(--ink3); font-size: 12.5px; font-style: italic; }
+
+/* ─── EMR ─── */
+.emr-search-bar {
+  display: flex; gap: 10px; align-items: center;
+  background: white; border: 1.5px solid var(--border2); border-radius: 10px;
+  padding: 11px 16px; margin-bottom: 20px;
+}
+.emr-search-bar svg { width: 18px; height: 18px; stroke: var(--ink3); fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
+.emr-search-bar input {
+  border: none; outline: none; font-size: 14.5px; color: var(--ink); width: 100%;
+  font-family: 'Inter', sans-serif; background: transparent;
+}
+.emr-search-bar input::placeholder { color: var(--ink3); }
+.emr-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
+.emr-card {
+  background: white; border: 1px solid var(--border2); border-radius: var(--radius); padding: 20px 22px;
+  cursor: pointer; transition: box-shadow .15s;
+}
+.emr-card:hover { box-shadow: var(--shadow-md); }
+.emr-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.emr-avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; flex-shrink: 0; }
+.emr-name { font-size: 15px; font-weight: 700; color: var(--ink); }
+.emr-phone { font-size: 12.5px; color: var(--ink3); margin-top: 1px; }
+.emr-timeline { border-top: 1px solid var(--border); padding-top: 12px; }
+.emr-visit { display: flex; gap: 10px; margin-bottom: 9px; font-size: 12.5px; }
+.emr-visit-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex-shrink: 0; margin-top: 4px; }
+.emr-visit-date { color: var(--ink3); min-width: 80px; }
+.emr-visit-note { color: var(--ink2); }
+.emr-empty { text-align: center; padding: 60px 20px; color: var(--ink3); grid-column: span 2; }
+.emr-empty svg { width: 40px; height: 40px; stroke: var(--border2); fill: none; stroke-width: 1.5; margin-bottom: 10px; }
+
+/* ─── ANALYTICS ─── */
+.analytics-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 28px; }
+.analytics-card { background: white; border: 1px solid var(--border2); border-radius: var(--radius); padding: 24px 22px; }
+.analytics-card-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--teal-light); display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+.analytics-card-icon svg { width: 20px; height: 20px; stroke: var(--teal-dark); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.analytics-card-label { font-size: 12px; font-weight: 600; color: var(--ink3); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 6px; }
+.analytics-card-val { font-family: 'Sora', sans-serif; font-size: 32px; font-weight: 800; color: var(--ink); }
+.analytics-card-sub { font-size: 12px; color: var(--ink3); margin-top: 5px; }
+.analytics-card.green-accent { border-color: rgba(29,158,117,0.35); background: var(--teal-light); }
+.analytics-card.green-accent .analytics-card-val { color: var(--teal-dark); }
+.analytics-card.green-accent .analytics-card-icon { background: white; }
+
+.bar-chart-wrap { background: white; border: 1px solid var(--border2); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
+.bar-chart-title { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 20px; }
+.bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.bar-label { font-size: 12.5px; color: var(--ink2); width: 110px; flex-shrink: 0; }
+.bar-track { flex: 1; background: var(--surface3); border-radius: 100px; height: 10px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 100px; background: var(--teal); transition: width .4s; }
+.bar-val { font-size: 12.5px; font-weight: 600; color: var(--ink2); width: 50px; text-align: right; flex-shrink: 0; }
+
+/* ─── TOAST ─── */
+.toast {
+  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--ink); color: white; padding: 13px 22px;
+  border-radius: 10px; font-size: 13.5px; font-weight: 500;
+  opacity: 0; pointer-events: none; transition: all .28s; z-index: 9999;
+  display: flex; align-items: center; gap: 9px; white-space: nowrap;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast-wa { background: #25D366; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .hero-wrap { grid-template-columns: 1fr; gap: 40px; padding: 50px 5% 40px; }
+  .hero-h1 { font-size: 36px; }
+  .dash-preview { display: none; }
+  .features-grid, .testi-grid { grid-template-columns: 1fr 1fr; }
+  .hiw-grid { grid-template-columns: 1fr; }
+  .hiw-step { border-right: none; border-bottom: 1px solid var(--border2); }
+  .hiw-step:last-child { border-bottom: none; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .analytics-stats { grid-template-columns: 1fr 1fr; }
+  #view-admin.active { grid-template-columns: 1fr; }
+  .admin-sidebar { display: none; }
+  .emr-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .features-grid { grid-template-columns: 1fr; }
+  .testi-grid { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .hero-h1 { font-size: 30px; }
+  .section { padding: 52px 5%; }
+  .nav-link { display: none; }
+  .stats-row { grid-template-columns: 1fr; }
+  .analytics-stats { grid-template-columns: 1fr; }
+}
+
+/* ─── MISC ─── */
+.hide { display: none !important; }
+.divider { height: 1px; background: var(--border); margin: 0; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════ GLOBAL NAV -->
+<nav id="main-nav">
+  <a class="nav-logo" href="#" onclick="showView('landing'); return false;">
+    <div class="logo-mark">
+      <svg viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 4v4l3 3-1.4 1.4L8 11.4V6h2z"/></svg>
+    </div>
+    Clinic<span>OS</span>
+  </a>
+  <div class="nav-right">
+    <a class="nav-link" href="#features" onclick="showView('landing')">Features</a>
+    <a class="nav-link" href="#how" onclick="showView('landing')">How it works</a>
+    <button class="nav-btn nav-btn-outline" onclick="showView('booking')">Patient Booking ↗</button>
+    <button class="nav-btn nav-btn-outline" onclick="showView('login')" id="nav-login-btn">Log In</button>
+    <button class="nav-btn nav-btn-primary" onclick="showView('signup')" id="nav-signup-btn">Sign Up Free →</button>
+    <button class="nav-btn nav-btn-primary" id="admin-toggle-btn" onclick="toggleAdmin()" style="display:none">Dashboard →</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════ VIEW: LANDING -->
+<div id="view-landing" class="view active">
+
+  <!-- HERO -->
+  <div class="hero-wrap">
+    <div class="hero-left">
+      <div class="hero-badge"><span class="hero-badge-dot"></span> Now free for all clinics in India</div>
+      <h1 class="hero-h1">Your clinic,<br><em>fully digital</em><br>in minutes.</h1>
+      <p class="hero-sub">One link. Live queue. WhatsApp alerts. ClinicOS turns any clinic into a digital-first practice — no IT setup, no hardware, no training required.</p>
+      <div class="hero-actions">
+        <button class="btn-primary-lg" onclick="showView('booking')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Try Patient Booking
+        </button>
+        <button class="btn-ghost" onclick="showView('signup')">
+          Create Free Account →
+        </button>
+      </div>
+      <p class="hero-note">✓ 100% free — No credit card. No setup fee. No hidden charges.</p>
+    </div>
+
+    <div class="hero-right">
+      <!-- Mini dashboard preview -->
+      <div class="dash-preview">
+        <div class="dp-bar">
+          <div class="dp-dots">
+            <div class="dp-dot dp-dot-r"></div>
+            <div class="dp-dot dp-dot-y"></div>
+            <div class="dp-dot dp-dot-g"></div>
+          </div>
+          <div class="dp-bar-url">clinicos.in/dr-goyal-clinic</div>
+        </div>
+        <div class="dp-body">
+          <div class="dp-sidebar">
+            <div class="dp-brand">Clinic<small>OS</small></div>
+            <div class="dp-nav on">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              Queue
+            </div>
+            <div class="dp-nav">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4"/></svg>
+              Patients
+            </div>
+            <div class="dp-nav">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+              Analytics
+            </div>
+          </div>
+          <div class="dp-main">
+            <div class="dp-stats-row">
+              <div class="dp-stat"><div class="dp-stat-n">14</div><div class="dp-stat-l">Today</div></div>
+              <div class="dp-stat"><div class="dp-stat-n">3</div><div class="dp-stat-l">Waiting</div></div>
+              <div class="dp-stat"><div class="dp-stat-n" style="color:var(--teal)">₹7K</div><div class="dp-stat-l">Revenue</div></div>
+            </div>
+            <div class="dp-row">
+              <div class="dp-rrow">
+                <div class="dp-av" style="background:#E1F5EE;color:#085041">RK</div>
+                <div style="flex:1"><div class="dp-rname">Rahul Kumar</div><div class="dp-rtime">10:00 AM</div></div>
+                <div class="dp-pill pill-waiting">Waiting</div>
+              </div>
+              <div class="dp-rrow">
+                <div class="dp-av" style="background:#FAEEDA;color:#633806">PS</div>
+                <div style="flex:1"><div class="dp-rname">Priya Sharma</div><div class="dp-rtime">10:30 AM</div></div>
+                <div class="dp-pill pill-confirmed">Confirmed</div>
+              </div>
+              <div class="dp-rrow">
+                <div class="dp-av" style="background:#FBEAF0;color:#4B1528">AM</div>
+                <div style="flex:1"><div class="dp-rname">Amit Mishra</div><div class="dp-rtime">09:30 AM</div></div>
+                <div class="dp-pill pill-done">Done</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGOS BAR -->
+  <div class="logos-bar">
+    <div class="logos-inner">
+      <span class="logos-label">Trusted by clinics like</span>
+      <div class="clinic-pills">
+        <span class="clinic-pill">Goyal Clinic, Jaipur</span>
+        <span class="clinic-pill">Mehta Dental, Delhi</span>
+        <span class="clinic-pill">Verma Paediatrics, Pune</span>
+        <span class="clinic-pill">Sharma ENT, Lucknow</span>
+        <span class="clinic-pill">City Skin Clinic, Bhopal</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="section-inner">
+      <div class="eyebrow">How it works</div>
+      <h2 class="section-h2">Live in three steps</h2>
+      <p class="section-sub">No installation. No IT vendor. No demo calls. Just sign up, share your link, and you're live.</p>
+      <div class="hiw-grid">
+        <div class="hiw-step">
+          <div class="hiw-num">01</div>
+          <div class="hiw-title">Create your free clinic account</div>
+          <p class="hiw-desc">Enter your name, clinic, and specialty. ClinicOS instantly generates your custom booking page at clinicos.in/your-clinic-name.</p>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-num">02</div>
+          <div class="hiw-title">Share your booking link</div>
+          <p class="hiw-desc">Paste it in your WhatsApp Status, Google Maps listing, or clinic notice board. Patients self-book — no phone calls needed.</p>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-num">03</div>
+          <div class="hiw-title">Run your queue from anywhere</div>
+          <p class="hiw-desc">Watch the live dashboard on your phone or tablet. Move patients through Confirmed → Waiting → Done with a single tap.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- FEATURES -->
+  <section id="features" class="features-bg">
+    <div class="section-inner">
+      <div class="eyebrow">What's included</div>
+      <h2 class="section-h2">Everything your clinic needs. Nothing it doesn't.</h2>
+      <p class="section-sub">Built for Indian clinics: low bandwidth, multi-device, multilingual-ready, and WhatsApp-native by design.</p>
+      <div class="features-grid">
+        <div class="feat-card">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+          </div>
+          <div class="feat-title">Custom Booking Link</div>
+          <p class="feat-desc">Your clinic gets a permanent, shareable URL at clinicos.in/your-name. Patients book 24/7 without calling.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="feat-title">Live Tri-State Queue</div>
+          <p class="feat-desc">Every patient moves through Confirmed → Waiting → Done in real time. Syncs instantly across all staff devices.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div class="feat-title">Digital Patient Records</div>
+          <p class="feat-desc">A searchable EMR indexed by name or phone number. Full visit history, notes, and complaints in one place.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          </div>
+          <div class="feat-title">WhatsApp Automation</div>
+          <p class="feat-desc">Booking confirmations and "You're next!" proximity alerts sent automatically to every patient's WhatsApp.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <div class="feat-title">Role-Based Access</div>
+          <p class="feat-desc">Doctor sees everything. Receptionist manages check-ins and the queue. Financial data stays protected by role.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <div class="feat-title">Revenue Analytics</div>
+          <p class="feat-desc">Auto-calculated weekly and monthly revenue summaries, busiest slots, and consultation trends. No spreadsheets.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section>
+    <div class="section-inner">
+      <div class="eyebrow">What doctors say</div>
+      <h2 class="section-h2">Real clinics. Real results.</h2>
+      <p class="section-sub">Feedback from independent doctors running their practices on ClinicOS.</p>
+      <div class="testi-grid">
+        <div class="testi-card">
+          <p class="testi-text">"I used to lose appointment slips all the time. Now everything is in one place and my receptionist can manage it without calling me every 10 minutes."</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:#E1F5EE;color:#085041">AG</div>
+            <div>
+              <div class="testi-name">Dr. Anil Goyal</div>
+              <div class="testi-role">General Physician, Jaipur</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <p class="testi-text">"The WhatsApp reminder alone cut my no-shows by almost half. Patients actually show up on time now. Simple but so effective."</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:#FAEEDA;color:#633806">SM</div>
+            <div>
+              <div class="testi-name">Dr. Sunita Mehta</div>
+              <div class="testi-role">Dental Surgeon, Delhi</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <p class="testi-text">"I was worried it would be complicated. My assistant had it running in one afternoon. No IT person, no training required. It just works."</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:#FBEAF0;color:#4B1528">KV</div>
+            <div>
+              <div class="testi-name">Dr. Kavita Verma</div>
+              <div class="testi-role">Paediatrician, Pune</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-inner">
+      <div class="eyebrow">Get started free</div>
+      <h2 class="section-h2">Your clinic can be live today.</h2>
+      <p class="section-sub">Completely free. No credit card. No hidden charges — ever. Your patients can start booking within the hour.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn-primary-lg" onclick="showView('signup')">Create Free Clinic Account →</button>
+        <button class="btn-ghost" style="color:white;border-color:rgba(255,255,255,0.25)" onclick="showView('booking')">Try Patient Booking Demo</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">Clinic<small>OS</small></div>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Support</a>
+        <a href="mailto:hello@clinicos.in">Contact</a>
+      </div>
+      <div class="footer-copy">© 2025 ClinicOS. Made in India 🇮🇳</div>
+    </div>
+  </footer>
+
+</div><!-- /view-landing -->
+
+<!-- ══════════════════════════════════════════════ VIEW: LOGIN -->
+<div id="view-login" class="view">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="logo-mark">
+          <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        Clinic<span>OS</span>
+      </div>
+      <div class="auth-title">Welcome back</div>
+      <div class="auth-sub">Sign in to your clinic dashboard</div>
+
+      <div class="auth-error" id="login-error"></div>
+
+      <div class="auth-form-group">
+        <label>Email address</label>
+        <input type="email" id="login-email" placeholder="doctor@yourclinic.in" autocomplete="email">
+      </div>
+      <div class="auth-form-group">
+        <label>Password</label>
+        <div class="auth-input-wrap">
+          <input type="password" id="login-password" placeholder="Enter your password" autocomplete="current-password">
+          <button class="auth-eye-btn" onclick="togglePwd('login-password', this)" type="button">
+            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <button class="auth-btn" id="login-submit-btn" onclick="handleLogin()">Sign In to Dashboard</button>
+
+      <div class="auth-divider">or</div>
+
+      <div class="auth-switch">
+        New to ClinicOS? <a href="#" onclick="showView('signup'); return false;">Create free clinic account →</a>
+      </div>
+    </div>
+    <div class="auth-back">
+      <a href="#" onclick="showView('landing'); return false;">← Back to ClinicOS home</a>
+    </div>
+  </div>
+</div><!-- /view-login -->
+
+<!-- ══════════════════════════════════════════════ VIEW: SIGNUP -->
+<div id="view-signup" class="view">
+  <div class="auth-wrap" style="max-width:480px">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="logo-mark">
+          <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        Clinic<span>OS</span>
+      </div>
+      <div class="auth-title">Create your clinic account</div>
+      <div class="auth-sub">Free forever. No credit card required.</div>
+
+      <div class="auth-error" id="signup-error"></div>
+      <div class="auth-success" id="signup-success"></div>
+
+      <div class="auth-form-group">
+        <label>Doctor's Full Name *</label>
+        <input type="text" id="signup-name" placeholder="e.g. Dr. Anil Goyal" autocomplete="name">
+      </div>
+      <div class="auth-form-group">
+        <label>Clinic Name *</label>
+        <input type="text" id="signup-clinic" placeholder="e.g. Goyal Clinic">
+      </div>
+      <div class="auth-form-group">
+        <label>Specialty</label>
+        <select id="signup-specialty">
+          <option value="">Select specialty</option>
+          <option>General Physician</option>
+          <option>Dental Surgeon</option>
+          <option>Paediatrician</option>
+          <option>Dermatologist</option>
+          <option>Gynaecologist</option>
+          <option>Orthopaedic</option>
+          <option>ENT Specialist</option>
+          <option>Ophthalmologist</option>
+          <option>Cardiologist</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="auth-form-group">
+        <label>Email address *</label>
+        <input type="email" id="signup-email" placeholder="doctor@yourclinic.in" autocomplete="email">
+      </div>
+      <div class="auth-form-group">
+        <label>Mobile Number *</label>
+        <input type="tel" id="signup-phone" placeholder="10-digit WhatsApp number" maxlength="10">
+      </div>
+      <div class="auth-form-group">
+        <label>Password *</label>
+        <div class="auth-input-wrap">
+          <input type="password" id="signup-password" placeholder="Min. 6 characters" autocomplete="new-password">
+          <button class="auth-eye-btn" onclick="togglePwd('signup-password', this)" type="button">
+            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div style="margin-bottom:15px">
+        <label style="display:block;font-size:12.5px;font-weight:600;color:var(--ink2);margin-bottom:8px">Your Role</label>
+        <div class="auth-role-row">
+          <div class="auth-role-btn selected" id="role-btn-doctor" onclick="selectRole('doctor')">
+            <div class="role-icon">🩺</div>
+            <div class="role-label">Doctor / Owner</div>
+          </div>
+          <div class="auth-role-btn" id="role-btn-receptionist" onclick="selectRole('receptionist')">
+            <div class="role-icon">🗂️</div>
+            <div class="role-label">Receptionist</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="auth-btn" id="signup-submit-btn" onclick="handleSignup()">Create Free Account</button>
+
+      <div class="auth-divider">or</div>
+      <div class="auth-switch">
+        Already have an account? <a href="#" onclick="showView('login'); return false;">Sign in →</a>
+      </div>
+    </div>
+    <div class="auth-back">
+      <a href="#" onclick="showView('landing'); return false;">← Back to ClinicOS home</a>
+    </div>
+  </div>
+</div><!-- /view-signup -->
+
+<!-- ══════════════════════════════════════════════ VIEW: PATIENT BOOKING -->
+<div id="view-booking" class="view">
+
+  <div class="booking-header">
+    <div class="booking-clinic-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      Goyal Clinic · Jaipur
+    </div>
+    <h1>Book Your Appointment</h1>
+    <p>Dr. Anil Goyal — General Physician &amp; Internal Medicine</p>
+    <div class="booking-meta">
+      <span class="booking-meta-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+        Mon–Sat, 9 AM – 1 PM
+      </span>
+      <span class="booking-meta-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .14h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+        ₹500 consultation fee
+      </span>
+      <span class="booking-meta-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        WhatsApp confirmation sent
+      </span>
+    </div>
+  </div>
+
+  <div class="booking-form-wrap">
+    <div class="booking-card">
+      <div id="booking-form-content">
+        <h3>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Your appointment details
+        </h3>
+
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="book-name" placeholder="e.g. Rahul Kumar" autocomplete="name">
+        </div>
+
+        <div class="form-group">
+          <label>Mobile Number *</label>
+          <input type="tel" id="book-phone" placeholder="10-digit number" maxlength="10" autocomplete="tel">
+        </div>
+
+        <div class="form-group">
+          <label>Select Time Slot *</label>
+          <div class="slot-grid" id="slot-grid">
+            <button class="slot-btn selected" onclick="selectSlot(this)">9:00 AM</button>
+            <button class="slot-btn" onclick="selectSlot(this)">9:30 AM</button>
+            <button class="slot-btn full" disabled>10:00 AM</button>
+            <button class="slot-btn" onclick="selectSlot(this)">10:30 AM</button>
+            <button class="slot-btn" onclick="selectSlot(this)">11:00 AM</button>
+            <button class="slot-btn full" disabled>11:30 AM</button>
+            <button class="slot-btn" onclick="selectSlot(this)">12:00 PM</button>
+            <button class="slot-btn" onclick="selectSlot(this)">12:30 PM</button>
+            <button class="slot-btn" onclick="selectSlot(this)">1:00 PM</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Reason for Visit *</label>
+          <select id="book-reason">
+            <option value="">Select reason</option>
+            <option>General Consultation</option>
+            <option>Follow-up Visit</option>
+            <option>Fever / Cold / Flu</option>
+            <option>Stomach / Digestion</option>
+            <option>Chronic Condition Review</option>
+            <option>Prescription Renewal</option>
+            <option>Test Reports Discussion</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <button class="btn-submit" onclick="submitBooking()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="20,6 9,17 4,12"/></svg>
+          Confirm Appointment
+        </button>
+        <p style="text-align:center;font-size:11.5px;color:var(--ink3);margin-top:12px">You'll receive a WhatsApp confirmation immediately after booking.</p>
+      </div>
+
+      <div class="booking-success" id="booking-success">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>
+        </div>
+        <h3>Appointment Confirmed!</h3>
+        <p id="booking-success-msg">Your slot has been booked successfully.</p>
+        <p style="font-size:12px;color:var(--ink3);margin-top:10px">A WhatsApp message has been sent to your number.</p>
+        <button class="btn-submit" style="max-width:260px;margin:20px auto 0" onclick="resetBookingForm()">Book Another Appointment</button>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:18px">
+      <a href="#" onclick="showView('landing'); return false;" style="font-size:13px;color:var(--ink3);text-decoration:none;">← Back to ClinicOS</a>
+      &nbsp;·&nbsp;
+      <a href="#" onclick="toggleAdmin(); return false;" style="font-size:13px;color:var(--teal);text-decoration:none;">Clinic Login →</a>
+    </div>
+  </div>
+</div><!-- /view-booking -->
+
+<!-- ══════════════════════════════════════════════ VIEW: ADMIN DASHBOARD -->
+<div id="view-admin" class="view">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar">
+    <div class="admin-clinic-info">
+      <div class="admin-clinic-name">
+        <span class="admin-online-dot"></span>Goyal Clinic
+      </div>
+      <div class="admin-clinic-link">clinicos.in/goyal-clinic</div>
+    </div>
+
+    <div class="admin-nav-section">
+      <div class="admin-nav-label">Clinic Operations</div>
+      <a class="admin-nav-item active" href="#" id="nav-queue" onclick="switchPanel('queue'); return false;">
+        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Live Queue
+      </a>
+      <a class="admin-nav-item" href="#" id="nav-emr" onclick="switchPanel('emr'); return false;">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        Patient EMR
+      </a>
+      <a class="admin-nav-item" href="#" id="nav-analytics" onclick="switchPanel('analytics'); return false;">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Analytics
+      </a>
+    </div>
+
+    <div class="admin-nav-section" style="margin-top:auto;padding-bottom:12px">
+      <div class="admin-nav-label">Settings</div>
+      <a class="admin-nav-item" href="#" onclick="showView('landing'); return false;">
+        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12,19 5,12 12,5"/></svg>
+        Back to site
+      </a>
+    </div>
+
+    <div class="admin-role-badge">
+      <div class="admin-role-pill">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Doctor · Admin
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+
+    <!-- ── QUEUE PANEL ── -->
+    <div class="admin-panel active" id="panel-queue">
+      <div class="admin-panel-header">
+        <div class="admin-panel-title">Live Queue</div>
+        <div class="admin-panel-sub">Real-time patient triage — tap buttons to advance status</div>
+      </div>
+
+      <div class="stats-row" id="queue-stats-row">
+        <!-- rendered by JS -->
+      </div>
+
+      <div class="queue-table-wrap">
+        <div class="table-toolbar">
+          <div>
+            <span class="table-title">Today's Appointments</span>
+            <span class="badge-count" id="queue-count-badge">0</span>
+          </div>
+          <button class="action-btn action-checkin" onclick="showView('booking')" style="font-size:12px">+ Add Walk-In</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Patient</th>
+                <th>Time</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="queue-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── EMR PANEL ── -->
+    <div class="admin-panel" id="panel-emr">
+      <div class="admin-panel-header">
+        <div class="admin-panel-title">Patient EMR Registry</div>
+        <div class="admin-panel-sub">Search by name or 10-digit mobile number</div>
+      </div>
+
+      <div class="emr-search-bar">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="emr-search" placeholder="Search by name or phone number…" oninput="renderEMR()">
+      </div>
+      <div class="emr-grid" id="emr-grid"></div>
+    </div>
+
+    <!-- ── ANALYTICS PANEL ── -->
+    <div class="admin-panel" id="panel-analytics">
+      <div class="admin-panel-header">
+        <div class="admin-panel-title">Financial & Performance Metrics</div>
+        <div class="admin-panel-sub">Auto-calculated from live appointment data. Assumes ₹500 per completed consultation.</div>
+      </div>
+      <div class="analytics-stats" id="analytics-stats"></div>
+      <div class="bar-chart-wrap" id="analytics-bar-chart"></div>
+    </div>
+
+  </main>
+</div><!-- /view-admin -->
+
+<!-- ══════════════════════════════════════════════ TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════════ FIREBASE SDK + AUTH LOGIC ══════════════════════════════════════════════ -->
+<script type="module">
+  // 🔥 Firebase Imports
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    onAuthStateChanged,
+    signOut,
+    updateProfile
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // 🔥 Your Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDJo0_tgi24GIq2cMO23KGLvVO6RaMP9to",
+    authDomain: "meddesk-c90e0.firebaseapp.com",
+    projectId: "meddesk-c90e0",
+    storageBucket: "meddesk-c90e0.appspot.com",
+    messagingSenderId: "230822407006",
+    appId: "1:230822407006:web:231e99ab5921aa11d2fdcf"
+  };
+
+  // 🔥 Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // ─────────────────────────────────────────────
+  // Expose Firebase auth functions to the global (non-module) script below.
+  // The rest of this page's logic runs in a plain <script> tag (not type="module"),
+  // so it cannot use `import` directly — we bridge it via window.*
+  // ─────────────────────────────────────────────
+
+  window.__firebaseReady = false;
+
+  // Sign up a brand-new clinic account.
+  // Stores extra profile fields (clinic name, specialty, role, phone) in Firestore,
+  // since Firebase Auth itself only stores email/password/displayName natively.
+  window.firebaseSignUp = async function (email, password, profileData) {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(cred.user, { displayName: profileData.name });
+    await setDoc(doc(db, "clinics", cred.user.uid), {
+      name: profileData.name,
+      clinic: profileData.clinic,
+      specialty: profileData.specialty || "",
+      phone: profileData.phone || "",
+      role: profileData.role || "doctor",
+      email: email,
+      createdAt: new Date().toISOString()
+    });
+    return cred.user;
+  };
+
+  // Log in an existing clinic account
+  window.firebaseLogIn = async function (email, password) {
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    return cred.user;
+  };
+
+  // Log out
+  window.firebaseLogOut = function () {
+    return signOut(auth);
+  };
+
+  // Fetch the extra clinic profile fields stored in Firestore for a given uid
+  window.firebaseGetClinicProfile = async function (uid) {
+    const snap = await getDoc(doc(db, "clinics", uid));
+    return snap.exists() ? snap.data() : null;
+  };
+
+  // Fires on every login/logout/page-reload-with-active-session.
+  // Calls into the plain-script function onFirebaseAuthChanged(user, profile)
+  // which is defined further down the page.
+  onAuthStateChanged(auth, async function (user) {
+    window.__firebaseReady = true;
+    if (user) {
+      const profile = await window.firebaseGetClinicProfile(user.uid);
+      if (window.onFirebaseAuthChanged) window.onFirebaseAuthChanged(user, profile);
+    } else {
+      if (window.onFirebaseAuthChanged) window.onFirebaseAuthChanged(null, null);
+    }
+  });
+</script>
+
+<!-- ══════════════════════════════════════════════ JAVASCRIPT -->
+<script>
+/* ═══════════════════════════════════════════
+   GLOBAL STATE
+═══════════════════════════════════════════ */
+var selectedSlotVal = '9:00 AM';
+var consultFee = 500;
+
+// Seed patients
+var patients = [
+  {
+    id: 1,
+    name: 'Rahul Kumar',
+    phone: '9812345678',
+    time: '09:30 AM',
+    reason: 'Fever / Cold / Flu',
+    status: 'waiting',
+    visits: [
+      { date: 'Jan 12, 2025', note: 'Viral fever, prescribed paracetamol' },
+      { date: 'Dec 5, 2024',  note: 'Annual checkup, all clear' }
+    ]
+  },
+  {
+    id: 2,
+    name: 'Priya Sharma',
+    phone: '9923456789',
+    time: '10:00 AM',
+    reason: 'General Consultation',
+    status: 'confirmed',
+    visits: [
+      { date: 'Feb 3, 2025',  note: 'Blood pressure follow-up' },
+      { date: 'Nov 20, 2024', note: 'Migraine consultation' }
+    ]
+  },
+  {
+    id: 3,
+    name: 'Amit Mishra',
+    phone: '9834567890',
+    time: '09:00 AM',
+    reason: 'Chronic Condition Review',
+    status: 'done',
+    visits: [
+      { date: 'Mar 1, 2025',  note: 'Diabetes review, HbA1c discussed' },
+      { date: 'Jan 8, 2025',  note: 'Prescription renewal, metformin' }
+    ]
+  },
+  {
+    id: 4,
+    name: 'Sunita Joshi',
+    phone: '9745678901',
+    time: '10:30 AM',
+    reason: 'Follow-up Visit',
+    status: 'confirmed',
+    visits: [
+      { date: 'Feb 18, 2025', note: 'Post-surgical follow-up, wound healing well' }
+    ]
+  }
+];
+
+/* ═══════════════════════════════════════════
+   VIEW SWITCHING
+═══════════════════════════════════════════ */
+function showView(name) {
+  document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
+  var el = document.getElementById('view-' + name);
+  if (el) el.classList.add('active');
+  if (name === 'admin') {
+    renderQueue();
+    renderEMR();
+    renderAnalytics();
+  }
+  window.scrollTo(0, 0);
+}
+
+/* ═══════════════════════════════════════════
+   AUTH STATE (now backed by real Firebase Auth)
+═══════════════════════════════════════════ */
+var currentUser = null;          // { uid, email, name, clinic, specialty, role, phone }
+var selectedSignupRole = 'doctor';
+var pendingAdminRedirect = false; // true while waiting for Firebase to confirm login/signup
+
+// Called automatically by the Firebase module script above
+// whenever auth state changes (login, logout, or session restored on page load).
+window.onFirebaseAuthChanged = function (firebaseUser, profile) {
+  if (firebaseUser) {
+    currentUser = {
+      uid: firebaseUser.uid,
+      email: firebaseUser.email,
+      name: (profile && profile.name) || firebaseUser.displayName || firebaseUser.email,
+      clinic: (profile && profile.clinic) || 'My Clinic',
+      specialty: profile && profile.specialty,
+      role: (profile && profile.role) || 'doctor',
+      phone: profile && profile.phone
+    };
+    updateNavForAuth();
+    if (pendingAdminRedirect) {
+      pendingAdminRedirect = false;
+      showView('admin');
+    }
+  } else {
+    currentUser = null;
+    updateNavForAuth();
+  }
+};
+
+function toggleAdmin() {
+  if (currentUser) {
+    var adminEl = document.getElementById('view-admin');
+    var isAdmin = adminEl.classList.contains('active');
+    if (isAdmin) {
+      showView('landing');
+    } else {
+      showView('admin');
+    }
+  } else {
+    showView('login');
+  }
+}
+
+function setBtnLoading(btnId, loading, loadingText, normalText) {
+  var btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.disabled = loading;
+  btn.textContent = loading ? loadingText : normalText;
+}
+
+async function handleLogin() {
+  var email    = document.getElementById('login-email').value.trim().toLowerCase();
+  var password = document.getElementById('login-password').value;
+  var errEl    = document.getElementById('login-error');
+
+  errEl.classList.remove('show');
+  if (!email || !password) { errEl.textContent = 'Please fill in all fields.'; errEl.classList.add('show'); return; }
+
+  setBtnLoading('login-submit-btn', true, 'Signing in…', 'Sign In to Dashboard');
+  pendingAdminRedirect = true;
+
+  try {
+    await window.firebaseLogIn(email, password);
+    // onFirebaseAuthChanged will fire and redirect to the admin view automatically
+  } catch (err) {
+    pendingAdminRedirect = false;
+    errEl.textContent = firebaseErrorToMessage(err);
+    errEl.classList.add('show');
+  } finally {
+    setBtnLoading('login-submit-btn', false, 'Signing in…', 'Sign In to Dashboard');
+  }
+}
+
+async function handleSignup() {
+  var name      = document.getElementById('signup-name').value.trim();
+  var clinic    = document.getElementById('signup-clinic').value.trim();
+  var email     = document.getElementById('signup-email').value.trim().toLowerCase();
+  var phone     = document.getElementById('signup-phone').value.trim();
+  var password  = document.getElementById('signup-password').value;
+  var specialty = document.getElementById('signup-specialty').value;
+  var errEl     = document.getElementById('signup-error');
+  var okEl      = document.getElementById('signup-success');
+
+  errEl.classList.remove('show'); okEl.classList.remove('show');
+
+  if (!name || !clinic || !email || !phone || !password) { errEl.textContent = 'Please fill in all required fields.'; errEl.classList.add('show'); return; }
+  if (phone.length !== 10 || isNaN(phone)) { errEl.textContent = 'Please enter a valid 10-digit mobile number.'; errEl.classList.add('show'); return; }
+  if (password.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; errEl.classList.add('show'); return; }
+
+  setBtnLoading('signup-submit-btn', true, 'Creating account…', 'Create Free Account');
+  pendingAdminRedirect = true;
+
+  try {
+    await window.firebaseSignUp(email, password, {
+      name: name,
+      clinic: clinic,
+      specialty: specialty,
+      phone: phone,
+      role: selectedSignupRole
+    });
+    okEl.textContent = '✓ Account created! Taking you to your dashboard…';
+    okEl.classList.add('show');
+    // onFirebaseAuthChanged will fire and redirect to the admin view automatically
+  } catch (err) {
+    pendingAdminRedirect = false;
+    errEl.textContent = firebaseErrorToMessage(err);
+    errEl.classList.add('show');
+  } finally {
+    setBtnLoading('signup-submit-btn', false, 'Creating account…', 'Create Free Account');
+  }
+}
+
+async function handleLogout() {
+  try {
+    await window.firebaseLogOut();
+  } catch (err) {
+    console.error('Logout error:', err);
+  }
+  // onFirebaseAuthChanged will fire and clear currentUser automatically
+  showView('landing');
+}
+
+// Translates Firebase Auth error codes into friendly messages
+function firebaseErrorToMessage(err) {
+  var code = err && err.code ? err.code : '';
+  switch (code) {
+    case 'auth/email-already-in-use':
+      return 'An account with this email already exists. Try signing in instead.';
+    case 'auth/invalid-email':
+      return 'Please enter a valid email address.';
+    case 'auth/weak-password':
+      return 'Password must be at least 6 characters.';
+    case 'auth/user-not-found':
+    case 'auth/wrong-password':
+    case 'auth/invalid-credential':
+      return 'Incorrect email or password.';
+    case 'auth/too-many-requests':
+      return 'Too many attempts. Please wait a moment and try again.';
+    case 'auth/network-request-failed':
+      return 'Network error. Please check your connection and try again.';
+    default:
+      return (err && err.message) ? err.message : 'Something went wrong. Please try again.';
+  }
+}
+
+function selectRole(role) {
+  selectedSignupRole = role;
+  document.getElementById('role-btn-doctor').classList.toggle('selected', role === 'doctor');
+  document.getElementById('role-btn-receptionist').classList.toggle('selected', role === 'receptionist');
+}
+
+function togglePwd(inputId, btn) {
+  var inp = document.getElementById(inputId);
+  var isText = inp.type === 'text';
+  inp.type = isText ? 'password' : 'text';
+  btn.innerHTML = isText
+    ? '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'
+    : '<svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+}
+
+function updateNavForAuth() {
+  if (currentUser) {
+    document.getElementById('nav-login-btn').style.display = 'none';
+    document.getElementById('nav-signup-btn').style.display = 'none';
+    document.getElementById('admin-toggle-btn').style.display = '';
+    document.getElementById('admin-toggle-btn').textContent = '← Exit Dashboard';
+    // Update sidebar clinic name if exists
+    var nameEl = document.querySelector('.admin-clinic-name');
+    if (nameEl) nameEl.innerHTML = '<span class="admin-online-dot"></span>' + (currentUser.clinic || 'My Clinic');
+    var linkEl = document.querySelector('.admin-clinic-link');
+    if (linkEl) linkEl.textContent = 'clinicos.in/' + (currentUser.clinic || '').toLowerCase().replace(/\s+/g, '-');
+    var roleEl = document.querySelector('.admin-role-pill');
+    if (roleEl) roleEl.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> ' + (currentUser.name || currentUser.email) + ' · ' + (currentUser.role === 'doctor' ? 'Doctor' : 'Receptionist');
+    // Add logout to sidebar
+    var logoutItem = document.getElementById('sidebar-logout');
+    if (!logoutItem) {
+      var settingsSection = document.querySelector('.admin-nav-section[style]');
+      if (settingsSection) {
+        var logoutEl = document.createElement('a');
+        logoutEl.className = 'admin-nav-item';
+        logoutEl.href = '#';
+        logoutEl.id = 'sidebar-logout';
+        logoutEl.onclick = function() { handleLogout(); return false; };
+        logoutEl.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Log Out';
+        settingsSection.appendChild(logoutEl);
+      }
+    }
+  } else {
+    document.getElementById('nav-login-btn').style.display = '';
+    document.getElementById('nav-signup-btn').style.display = '';
+    document.getElementById('admin-toggle-btn').style.display = 'none';
+    var logoutItem2 = document.getElementById('sidebar-logout');
+    if (logoutItem2) logoutItem2.remove();
+  }
+}
+
+function switchPanel(name) {
+  document.querySelectorAll('.admin-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.admin-nav-item').forEach(function(n) { n.classList.remove('active'); });
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+  if (name === 'analytics') renderAnalytics();
+  if (name === 'emr') renderEMR();
+  if (name === 'queue') renderQueue();
+}
+
+/* ═══════════════════════════════════════════
+   BOOKING ENGINE
+═══════════════════════════════════════════ */
+function selectSlot(el) {
+  if (el.classList.contains('full')) return;
+  document.querySelectorAll('.slot-btn').forEach(function(s) { s.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedSlotVal = el.textContent.trim();
+}
+
+function submitBooking() {
+  var name   = document.getElementById('book-name').value.trim();
+  var phone  = document.getElementById('book-phone').value.trim();
+  var reason = document.getElementById('book-reason').value;
+
+  if (!name)   { showToast('Please enter your full name.'); return; }
+  if (phone.length !== 10 || isNaN(phone)) { showToast('Please enter a valid 10-digit mobile number.'); return; }
+  if (!reason) { showToast('Please select a reason for your visit.'); return; }
+
+  // Check for existing patient
+  var existing = patients.find(function(p) { return p.phone === phone; });
+
+  var newVisit = { date: formatDate(new Date()), note: reason };
+
+  if (existing) {
+    existing.visits.unshift(newVisit);
+    // Add a new appointment entry
+    patients.unshift({
+      id: Date.now(),
+      name: existing.name,
+      phone: existing.phone,
+      time: selectedSlotVal,
+      reason: reason,
+      status: 'confirmed',
+      visits: existing.visits
+    });
+  } else {
+    patients.unshift({
+      id: Date.now(),
+      name: name,
+      phone: phone,
+      time: selectedSlotVal,
+      reason: reason,
+      status: 'confirmed',
+      visits: [newVisit]
+    });
+  }
+
+  // Show success
+  document.getElementById('booking-form-content').style.display = 'none';
+  var successEl = document.getElementById('booking-success');
+  successEl.style.display = 'block';
+  document.getElementById('booking-success-msg').textContent =
+    'Hi ' + name + '! Your slot at ' + selectedSlotVal + ' with Dr. Anil Goyal is confirmed.';
+
+  // WhatsApp toast
+  setTimeout(function() {
+    showToastWA('📲 WhatsApp sent to +91 ' + phone.substr(0,5) + '•••••: "Your appointment at ' + selectedSlotVal + ' is confirmed. See you soon!"');
+  }, 600);
+}
+
+function resetBookingForm() {
+  document.getElementById('book-name').value = '';
+  document.getElementById('book-phone').value = '';
+  document.getElementById('book-reason').value = '';
+  document.querySelectorAll('.slot-btn').forEach(function(s) { s.classList.remove('selected'); });
+  document.querySelectorAll('.slot-btn')[0].classList.add('selected');
+  selectedSlotVal = '9:00 AM';
+  document.getElementById('booking-form-content').style.display = 'block';
+  document.getElementById('booking-success').style.display = 'none';
+}
+
+/* ═══════════════════════════════════════════
+   QUEUE RENDER
+═══════════════════════════════════════════ */
+function renderQueue() {
+  var confirmed = patients.filter(function(p) { return p.status === 'confirmed'; }).length;
+  var waiting   = patients.filter(function(p) { return p.status === 'waiting'; }).length;
+  var done      = patients.filter(function(p) { return p.status === 'done'; }).length;
+  var total     = patients.length;
+
+  // Stats
+  document.getElementById('queue-stats-row').innerHTML =
+    statCard('Today\'s Total', total, 'Appointments booked') +
+    statCard('Confirmed', confirmed, 'Waiting to check in') +
+    statCard('In Waiting Room', waiting, 'Currently at clinic') +
+    statCard('Completed', done, 'Consultations done', done > 0 ? 'accent' : '');
+
+  document.getElementById('queue-count-badge').textContent = total;
+
+  // Table
+  var tbody = document.getElementById('queue-tbody');
+  if (patients.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:36px;color:var(--ink3)">No appointments today. <a href="#" onclick="showView(\'booking\'); return false;" style="color:var(--teal)">Add a booking →</a></td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = patients.map(function(p) {
+    var initials = p.name.split(' ').map(function(n) { return n[0]; }).join('').substr(0,2).toUpperCase();
+    var colors = avatarColor(p.phone);
+    var pillClass = 's-' + p.status;
+    var statusLabel = p.status.charAt(0).toUpperCase() + p.status.slice(1);
+    var actionHTML = '';
+    if (p.status === 'confirmed') {
+      actionHTML = '<button class="action-btn action-checkin" onclick="advanceStatus(' + p.id + ')">Check In →</button>';
+    } else if (p.status === 'waiting') {
+      actionHTML = '<button class="action-btn action-complete" onclick="advanceStatus(' + p.id + ')">Complete ✓</button>';
+    } else {
+      actionHTML = '<span class="action-done-label">Visit complete</span>';
+    }
+    return '<tr>' +
+      '<td><div class="patient-name">' + escHtml(p.name) + '</div><div class="patient-phone">' + fmtPhone(p.phone) + '</div></td>' +
+      '<td style="font-weight:600">' + escHtml(p.time) + '</td>' +
+      '<td style="font-size:13px">' + escHtml(p.reason) + '</td>' +
+      '<td><span class="status-pill ' + pillClass + '">' + statusLabel + '</span></td>' +
+      '<td>' + actionHTML + '</td>' +
+      '</tr>';
+  }).join('');
+}
+
+function statCard(label, val, meta, extraClass) {
+  return '<div class="stat-card ' + (extraClass || '') + '">' +
+    '<div class="stat-card-label">' + label + '</div>' +
+    '<div class="stat-card-val">' + val + '</div>' +
+    '<div class="stat-card-meta">' + meta + '</div>' +
+    '</div>';
+}
+
+function advanceStatus(id) {
+  var p = patients.find(function(x) { return x.id === id; });
+  if (!p) return;
+  if (p.status === 'confirmed') {
+    p.status = 'waiting';
+    showToastWA('📲 WhatsApp to ' + fmtPhone(p.phone) + ': "You\'re next! Please make your way to the consultation room."');
+  } else if (p.status === 'waiting') {
+    p.status = 'done';
+    showToast('✓ ' + p.name + '\'s visit marked as complete.');
+  }
+  renderQueue();
+  renderAnalytics();
+}
+
+/* ═══════════════════════════════════════════
+   EMR RENDER
+═══════════════════════════════════════════ */
+function renderEMR() {
+  var query = (document.getElementById('emr-search') ? document.getElementById('emr-search').value : '').toLowerCase().trim();
+
+  // Deduplicate by phone for EMR (show each patient once)
+  var seen = {};
+  var uniquePatients = [];
+  patients.forEach(function(p) {
+    if (!seen[p.phone]) {
+      seen[p.phone] = true;
+      uniquePatients.push(p);
+    }
+  });
+
+  var filtered = uniquePatients.filter(function(p) {
+    if (!query) return true;
+    return p.name.toLowerCase().includes(query) || p.phone.includes(query);
+  });
+
+  var grid = document.getElementById('emr-grid');
+  if (!grid) return;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="emr-empty"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div>No patient records found for "' + escHtml(query) + '"</div></div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(function(p) {
+    var initials = p.name.split(' ').map(function(n) { return n[0]; }).join('').substr(0,2).toUpperCase();
+    var colors = avatarColor(p.phone);
+    var visitsHtml = p.visits.slice(0,3).map(function(v) {
+      return '<div class="emr-visit">' +
+        '<div class="emr-visit-dot"></div>' +
+        '<div class="emr-visit-date">' + escHtml(v.date) + '</div>' +
+        '<div class="emr-visit-note">' + escHtml(v.note) + '</div>' +
+        '</div>';
+    }).join('');
+    return '<div class="emr-card">' +
+      '<div class="emr-card-header">' +
+        '<div class="emr-avatar" style="background:' + colors[0] + ';color:' + colors[1] + '">' + initials + '</div>' +
+        '<div><div class="emr-name">' + escHtml(p.name) + '</div><div class="emr-phone">' + fmtPhone(p.phone) + '</div></div>' +
+      '</div>' +
+      '<div class="emr-timeline">' + visitsHtml + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════
+   ANALYTICS RENDER
+═══════════════════════════════════════════ */
+function renderAnalytics() {
+  var done = patients.filter(function(p) { return p.status === 'done'; });
+  var revenue = done.length * consultFee;
+  var total = patients.length;
+  var waiting = patients.filter(function(p) { return p.status === 'waiting'; }).length;
+  var confirmed = patients.filter(function(p) { return p.status === 'confirmed'; }).length;
+
+  var statsEl = document.getElementById('analytics-stats');
+  if (!statsEl) return;
+  statsEl.innerHTML =
+    analyticsCard('Total Patients Today', total, 'Across all statuses', 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 7a4 4 0 100 0 4 4 0 000 0M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75', '') +
+    analyticsCard('Consultations Done', done.length, 'Completed visits', 'M22,11.08V12a10,10 0,0,1,-5.93,9.14 M22,4 L12,14.01 9,11.01', '') +
+    analyticsCard('Today\'s Revenue', '₹' + revenue.toLocaleString('en-IN'), 'At ₹500 per consultation', 'M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6', 'green-accent');
+
+  // Bar chart
+  var reasonCounts = {};
+  patients.forEach(function(p) { reasonCounts[p.reason] = (reasonCounts[p.reason] || 0) + 1; });
+  var maxCount = Math.max.apply(null, Object.values(reasonCounts).concat([1]));
+  var barsHtml = Object.keys(reasonCounts).map(function(r) {
+    var pct = Math.round((reasonCounts[r] / maxCount) * 100);
+    return '<div class="bar-row">' +
+      '<div class="bar-label">' + escHtml(r.split('/')[0].trim().substring(0,18)) + '</div>' +
+      '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
+      '<div class="bar-val">' + reasonCounts[r] + ' pt' + (reasonCounts[r] !== 1 ? 's' : '') + '</div>' +
+      '</div>';
+  }).join('');
+
+  document.getElementById('analytics-bar-chart').innerHTML =
+    '<div class="bar-chart-title">Visits by Reason</div>' + barsHtml;
+}
+
+function analyticsCard(label, val, sub, svgPath, extraClass) {
+  return '<div class="analytics-card ' + extraClass + '">' +
+    '<div class="analytics-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="' + (extraClass === 'green-accent' ? 'var(--teal-dark)' : 'var(--teal-dark)') + '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="' + svgPath + '"/></svg></div>' +
+    '<div class="analytics-card-label">' + label + '</div>' +
+    '<div class="analytics-card-val">' + val + '</div>' +
+    '<div class="analytics-card-sub">' + sub + '</div>' +
+    '</div>';
+}
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show';
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(function() { t.classList.remove('show'); }, 3000);
+}
+
+function showToastWA(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast toast-wa show';
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(function() { t.classList.remove('show'); }, 3800);
+}
+
+/* ═══════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════ */
+var avatarPalette = [
+  ['#E1F5EE','#085041'],['#FAEEDA','#633806'],['#FBEAF0','#4B1528'],
+  ['#E8F0FB','#1A3B7A'],['#F0EBF8','#4A1F8A'],['#FEF3DC','#6B4500']
+];
+function avatarColor(seed) {
+  var idx = seed.charCodeAt(0) % avatarPalette.length;
+  return avatarPalette[idx];
+}
+
+function fmtPhone(p) { return '+91 ' + p.substr(0,5) + ' ' + p.substr(5); }
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function formatDate(d) {
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+}
+
+/* ─── INIT ─── */
+renderQueue();
+renderEMR();
+renderAnalytics();
+</script>
+</body>
+</html>
